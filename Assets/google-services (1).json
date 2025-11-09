@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "645369306165",
+    "project_id": "itd-asg1-yakuntoast",
+    "storage_bucket": "itd-asg1-yakuntoast.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645369306165:android:5220ad292c84055f4ee57c",
+        "android_client_info": {
+          "package_name": "com.zelden.yakuntoast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz3HgT0r3gl7_UwJK55FXROU7p6_ua9W0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
