@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
@@ -37,6 +38,8 @@ public class FirebaseManager : MonoBehaviour
     public Button btnSignup;
     #endregion
 
+    [Header("Scene Management")]
+    public int sceneIndex = 1; // Index of the scene to load after login
     #region Unity Lifecycle
     private async void Awake()
     {
