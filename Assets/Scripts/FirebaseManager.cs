@@ -370,4 +370,5 @@ public class FirebaseManager : MonoBehaviour
         };
     }
     #endregion
+
 }
