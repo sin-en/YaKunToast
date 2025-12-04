@@ -29,11 +29,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject); // Destroy duplicate instance
         }
     }
+    void Start()
+    {
+        itemsCountText.text = "Items: " + itemsCollected.ToString() + "/" + totalItems.ToString();
+    }
 
     /// <summary>
     /// Updates the item counter UI text.
     /// </summary>
-    public void ItemsCount()
+    public void ModifyItemsCount()
     {
         itemsCollected++;
         UpdateItemsUI();
