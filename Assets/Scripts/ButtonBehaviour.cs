@@ -13,6 +13,11 @@ public class ButtonBehaviour : MonoBehaviour
             r.enabled = !r.enabled;
         }
     }
+
+    public void CollectItem()
+    {
+        GameManager.instance.ModifyItemsCount();
+    }
 }
 
 
