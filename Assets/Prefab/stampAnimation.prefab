@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1823097376470519273}
-  - component: {fileID: 3449783375671447778}
   m_Layer: 0
   m_Name: stampAnimation
   m_TagString: Untagged
@@ -34,19 +33,6 @@ Transform:
   - {fileID: 5066780439629010973}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3449783375671447778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7827644234783454670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70b41e483b97b7d4da60abf27772dca2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isCollected: 0
 --- !u!1 &8987408851573465703
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,10 +197,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 420539650411083443, guid: 7f48ce77ba6df4e44af2945d03317992, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6114905548434765944}
   m_SourcePrefab: {fileID: 100100000, guid: 7f48ce77ba6df4e44af2945d03317992, type: 3}
 --- !u!4 &5066780439629010973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2646060037810787339, guid: 7f48ce77ba6df4e44af2945d03317992, type: 3}
   m_PrefabInstance: {fileID: 7127052387607219222}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7439505644791904933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 420539650411083443, guid: 7f48ce77ba6df4e44af2945d03317992, type: 3}
+  m_PrefabInstance: {fileID: 7127052387607219222}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6114905548434765944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7439505644791904933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b41e483b97b7d4da60abf27772dca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCollected: 0
+  stampGameObject: {fileID: 7827644234783454670}

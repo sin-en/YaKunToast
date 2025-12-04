@@ -30,6 +30,12 @@ public class StampBehaviour : MonoBehaviour
     }
     public void DeactivateStamp()
     {
+        stampAnim.SetBool("isStamp", false);
+        StartCoroutine(DeactivateAfterDelay(0.5f));
+    }
+    private IEnumerator DeactivateAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         stampGameObject.SetActive(false);
     }
 }
