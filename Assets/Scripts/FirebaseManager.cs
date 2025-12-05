@@ -14,6 +14,7 @@ public class FirebaseManager : MonoBehaviour
 {
     #region Firebase References
     [Header("Firebase")]
+    public static FirebaseManager instance;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference dbReference;
@@ -43,6 +44,16 @@ public class FirebaseManager : MonoBehaviour
     #region Unity Lifecycle
     private async void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         await InitializeFirebase();
     }
 
@@ -356,7 +367,6 @@ public class FirebaseManager : MonoBehaviour
             _ => "Login Failed!"
         };
     }
-
     private string GetSignupErrorMessage(AuthError errorCode)
     {
         return errorCode switch

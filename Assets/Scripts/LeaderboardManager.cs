@@ -29,9 +29,6 @@ public class LeaderboardManager : MonoBehaviour
         Debug.Log("LeaderboardManager initialized");
     }
     #region Submit Score
-    /// <summary>
-    /// Call this when a player completes a set to submit their time
-    /// </summary>
     public void SubmitScore(float completionTime)
     {
         if (auth.CurrentUser == null)
@@ -39,7 +36,6 @@ public class LeaderboardManager : MonoBehaviour
             Debug.LogError("No user logged in!");
             return;
         }
-
         StartCoroutine(SubmitScoreCoroutine(auth.CurrentUser.UserId, auth.CurrentUser.DisplayName, completionTime));
     }
 
@@ -53,13 +49,9 @@ public class LeaderboardManager : MonoBehaviour
             completionTime = completionTime,
             timestamp = GetCurrentTimestamp()
         };
-
         string json = JsonUtility.ToJson(leaderboardEntry);
-        
-        // Store in leaderboard path: leaderboard/{userId}
         var submitTask = dbReference.Child("leaderboard").Child(userId).SetRawJsonValueAsync(json);
         yield return new WaitUntil(() => submitTask.IsCompleted);
-
         if (submitTask.Exception != null)
         {
             Debug.LogError($"Failed to submit score: {submitTask.Exception}");
@@ -67,24 +59,19 @@ public class LeaderboardManager : MonoBehaviour
         else
         {
             Debug.Log($"Score submitted successfully for {userName}: {completionTime}s");
-            
-            // Optionally update the user's profile with their best time
             yield return StartCoroutine(UpdateUserBestTime(userId, completionTime));
         }
     }
-
     private IEnumerator UpdateUserBestTime(string userId, float newTime)
     {
         var userRef = dbReference.Child("users").Child(userId);
         var getTask = userRef.GetValueAsync();
         yield return new WaitUntil(() => getTask.IsCompleted);
-
         if (getTask.Exception != null)
         {
             Debug.LogError($"Failed to get user data: {getTask.Exception}");
             yield break;
         }
-
         DataSnapshot snapshot = getTask.Result;
         if (snapshot.Exists)
         {
@@ -114,43 +101,30 @@ public class LeaderboardManager : MonoBehaviour
     #endregion
 
     #region Fetch and Display Leaderboard
-    /// <summary>
-    /// Fetches and displays the top 10 fastest times
-    /// </summary>
     public void ShowLeaderboard()
     {
         StartCoroutine(FetchLeaderboardData());
     }
-
     private IEnumerator FetchLeaderboardData()
     {
-        // Clear existing leaderboard entries
         ClearLeaderboard();
-
-        // Query top 10 fastest times (lowest completionTime values)
         var dbTask = dbReference.Child("leaderboard")
             .OrderByChild("completionTime")
             .LimitToFirst(10)
             .GetValueAsync();
-
         yield return new WaitUntil(() => dbTask.IsCompleted);
-
         if (dbTask.Exception != null)
         {
             Debug.LogWarning($"Failed to fetch leaderboard data: {dbTask.Exception}");
             yield break;
         }
-
         DataSnapshot snapshot = dbTask.Result;
-        
         if (!snapshot.Exists)
         {
             Debug.Log("No leaderboard data found");
             yield break;
         }
-
         List<LeaderboardEntry> leaderboardEntries = new List<LeaderboardEntry>();
-
         foreach (DataSnapshot childSnapshot in snapshot.Children)
         {
             try
@@ -165,7 +139,6 @@ public class LeaderboardManager : MonoBehaviour
                 Debug.LogError($"Error parsing leaderboard entry: {ex.Message}");
             }
         }
-
         totalUsers = leaderboardEntries.Count;
         Debug.Log($"Total leaderboard entries: {totalUsers}");
 
@@ -179,8 +152,6 @@ public class LeaderboardManager : MonoBehaviour
             Debug.LogError("Leaderboard prefab or container not assigned!");
             return;
         }
-
-        // Entries are already sorted by completionTime (ascending) from the query
         for (int i = 0; i < entries.Count; i++)
         {
             LeaderboardEntry entry = entries[i];
@@ -202,7 +173,6 @@ public class LeaderboardManager : MonoBehaviour
             }
         }
     }
-
     private void ClearLeaderboard()
     {
         if (leaderboardContainer == null) return;
@@ -213,11 +183,7 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Get Player Rank
-    /// <summary>
-    /// Gets the current player's rank on the leaderboard
-    /// </summary>
     public void GetMyRank()
     {
         if (auth.CurrentUser == null)
@@ -225,10 +191,8 @@ public class LeaderboardManager : MonoBehaviour
             Debug.LogError("No user logged in!");
             return;
         }
-
         StartCoroutine(GetPlayerRankCoroutine(auth.CurrentUser.UserId));
     }
-
     private IEnumerator GetPlayerRankCoroutine(string userId)
     {
         // Get player's time
@@ -240,36 +204,29 @@ public class LeaderboardManager : MonoBehaviour
             Debug.Log("Player has no leaderboard entry yet");
             yield break;
         }
-
         string json = playerTask.Result.GetRawJsonValue();
         LeaderboardEntry playerEntry = JsonUtility.FromJson<LeaderboardEntry>(json);
         float playerTime = playerEntry.completionTime;
-
-        // Get all entries with better times
         var rankTask = dbReference.Child("leaderboard")
             .OrderByChild("completionTime")
             .EndAt(playerTime)
             .GetValueAsync();
 
         yield return new WaitUntil(() => rankTask.IsCompleted);
-
         if (rankTask.Exception != null)
         {
             Debug.LogError($"Failed to get rank: {rankTask.Exception}");
             yield break;
         }
-
         int rank = (int)rankTask.Result.ChildrenCount;
         Debug.Log($"Your rank: {rank} with time: {playerTime}s");
     }
     #endregion
-
     #region Utilities
     private long GetCurrentTimestamp()
     {
         return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
-
     public string FormatTime(float seconds)
     {
         TimeSpan time = TimeSpan.FromSeconds(seconds);

@@ -13,7 +13,7 @@ public class Timer : MonoBehaviour
     public LeaderboardManager leaderboardManager;
     private FirebaseAuth auth;
     private DatabaseReference dbReference;
-
+    private bool hasSubmittedScore = false;
     private void Awake()
     {
         auth = FirebaseAuth.DefaultInstance;
@@ -32,19 +32,24 @@ public class Timer : MonoBehaviour
     {
         isRunning = true;
         timer = 0f;
+        hasSubmittedScore = false;
+        Debug.Log("Timer started!");
     }
     public void PauseTimer()
     {
         isRunning = false;
+        Debug.Log("Timer paused!");
     }
     public void ResumeTimer()
     {
         isRunning = true;
+        Debug.Log("Timer resumed!");
     }
     public void ResetTimer()
     {
         isRunning = false;
         timer = 0f;
+        hasSubmittedScore = false;
         UpdateTimerDisplay();
         Debug.Log("Timer reset!");
     }
@@ -55,7 +60,12 @@ public class Timer : MonoBehaviour
             Debug.LogWarning("Timer is not running!");
             return;
         }
-
+        if (hasSubmittedScore)
+        {
+            Debug.LogWarning("Score has already been submitted!");
+            return;
+        }
+        hasSubmittedScore = true;
         isRunning = false;
         float finalTime = timer;
         
@@ -69,6 +79,11 @@ public class Timer : MonoBehaviour
     #region Save Completion Time
     private IEnumerator SaveCompletionTime(float completionTime)
     {
+        if (auth.CurrentUser == null)
+        {
+            Debug.LogError("No authenticated user found. Cannot save completion time.");
+            yield break;
+        }
         FirebaseUser user = auth.CurrentUser;
         
         // Create leaderboard entry
@@ -103,6 +118,45 @@ public class Timer : MonoBehaviour
             {
                 leaderboardManager.SubmitScore(completionTime);
             }
+            yield return StartCoroutine(UpdatePlayerCompletionTime(user.UserId, completionTime));
+        }
+    }
+
+    private IEnumerator UpdatePlayerCompletionTime(string userId, float completionTime)
+    {
+        var userRef = dbReference.Child("users").Child(userId);
+        var getTask = userRef.GetValueAsync();
+        yield return new WaitUntil(() => getTask.IsCompleted);
+
+        if (getTask.Exception != null)
+        {
+            Debug.LogError($"Failed to get user data: {getTask.Exception}");
+            yield break;
+        }
+
+        DataSnapshot snapshot = getTask.Result;
+        if (snapshot.Exists)
+        {
+            string json = snapshot.GetRawJsonValue();
+            Player playerData = JsonUtility.FromJson<Player>(json);
+
+            // Update time taken
+            playerData.timeTaken = completionTime;
+            playerData.completedSet = true;
+            playerData.completedAt = System.DateTime.UtcNow.ToString("o");
+
+            string updatedJson = JsonUtility.ToJson(playerData);
+            var updateTask = userRef.SetRawJsonValueAsync(updatedJson);
+            yield return new WaitUntil(() => updateTask.IsCompleted);
+
+            if (updateTask.Exception != null)
+            {
+                Debug.LogError($"Failed to update player data: {updateTask.Exception}");
+            }
+            else
+            {
+                Debug.Log($"Player data updated with completion time!");
+            }
         }
     }
     #endregion
@@ -135,6 +189,10 @@ public class Timer : MonoBehaviour
     public bool IsTimerRunning()
     {
         return isRunning;
+    }
+    public bool HasSubmittedScore()
+    {
+        return hasSubmittedScore;
     }
     #endregion
 }

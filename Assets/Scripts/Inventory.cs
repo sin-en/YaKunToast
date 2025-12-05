@@ -3,12 +3,16 @@ using System;
 [Serializable]
 public class Inventory
 {
+    public string itemId;
     public string itemName;
-    public int qty;
+    public string collectedAt; // Timestamp
 
-    public Inventory(string itemName, int qty)
+    public Inventory() { }
+
+    public Inventory(string itemId, string itemName)
     {
+        this.itemId = itemId;
         this.itemName = itemName;
-        this.qty = qty;
+        this.collectedAt = System.DateTime.UtcNow.ToString("o");
     }
 }
