@@ -53,9 +53,11 @@ nav ul li a:hover {
     transform: scale(1.05);
 }
 
-/* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);
+    background:
+        linear-gradient(rgba(0,0,0,0.60), rgba(0,0,0,0.60)), /* increase 0.45 → 0.60 for more darkness */
+        url("https://media.licdn.com/dms/image/D5622AQEA_RlMnPTAcQ/feedshare-shrink_800/0/1716813119557?e=2147483647&v=beta&t=OXEgJvb6sbn-X19kQyeB2aFizfd5ksagoSgYE3ky1Qo") no-repeat center/cover;
+    background-position: 10% 25%;
     color: white;
     padding: 6rem 2rem;
     text-align: center;
