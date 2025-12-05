@@ -1,0 +1,9 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyCeUj6qc8vuiyPNuHInyNYtwHGJLFNsnVk",
+    authDomain: "itd-asg1-yakuntoast.firebaseapp.com",
+    databaseURL: "https://itd-asg1-yakuntoast-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "itd-asg1-yakuntoast",
+    storageBucket: "itd-asg1-yakuntoast.firebasestorage.app",
+    messagingSenderId: "645369306165",
+    appId: "1:645369306165:web:836a5413da348b0f4ee57c"
+};

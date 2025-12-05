@@ -52,7 +52,7 @@
                 });
         }
     
-    
+    getPlayerData();
 
     //Working with Authentication
     const auth = getAuth();

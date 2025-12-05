@@ -8,12 +8,8 @@ public class MultipleImageTrackingManager : MonoBehaviour
     //Prefabs to spawn
     [SerializeField]
     List<GameObject> prefabsToSpawn = new List<GameObject>();
-    //ARTrackedImageManager reference
     private ARTrackedImageManager trackedImageManager;
-    //Dictionary to reference the spawned prefabs
     private Dictionary<string, GameObject> arObjects;
-
-    //Initialization and reference assigning
     private void Start()
     {
         trackedImageManager = GetComponent<ARTrackedImageManager>();
@@ -22,25 +18,26 @@ public class MultipleImageTrackingManager : MonoBehaviour
         arObjects = new Dictionary<string, GameObject>();
         SetupSceneElements();
     }
-
     private void OnDestroy()
     {
         trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
-
     //Setup Scene Elements
     private void SetupSceneElements()
     {
         foreach (var prefab in prefabsToSpawn)
         {
+            if (prefab == null)
+            {
+                Debug.LogWarning("Null prefab found in prefabsToSpawn list!");
+                continue;
+            }
             var arObject = Instantiate(prefab, Vector3.zero, Quaternion.identity);
             arObject.name = prefab.name;
             arObject.gameObject.SetActive(false);
             arObjects.Add(arObject.name, arObject);
         }
     }
-
-    //Update tracked images and prefabs
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
         foreach (var trackedImage in eventArgs.added)
@@ -58,7 +55,6 @@ public class MultipleImageTrackingManager : MonoBehaviour
             UpdateARObject(trackedImage.Value);
         }
     }
-
     private void UpdateARObject(ARTrackedImage trackedImage)
     {
         if(trackedImage == null) return;

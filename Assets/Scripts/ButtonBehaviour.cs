@@ -3,7 +3,18 @@ using UnityEngine;
 public class ButtonBehaviour : MonoBehaviour
 {
     [SerializeField]
-    private GameObject targetObject; // Assign the root of the jar in Inspector
+    private GameObject targetObject; // Assign the root of item in Inspector
+    public bool isCollected;
+    public string itemId;
+    public string itemName;
+
+    void Awake()
+    {
+        if (string.IsNullOrEmpty(itemId))
+        {
+            itemId = gameObject.name;
+        }
+    }
 
     public void ToggleMeshRenderer()
     {
@@ -16,7 +27,11 @@ public class ButtonBehaviour : MonoBehaviour
 
     public void CollectItem()
     {
-        GameManager.instance.ModifyItemsCount();
+        isCollected = true;
+        if (GameManager.instance != null)
+            {
+                GameManager.instance.CollectItem(itemId, itemName);
+            }
     }
 }
 
