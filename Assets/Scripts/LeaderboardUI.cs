@@ -8,7 +8,6 @@ public class LeaderboardUI : MonoBehaviour
     public TMP_Text playerNameText;
     public TMP_Text timeText;
     public Image backgroundImage;
-
     [Header("Rank Colors")]
     public Color firstPlaceColor = new Color(1f, 0.84f, 0f); // Gold
     public Color secondPlaceColor = new Color(0.75f, 0.75f, 0.75f); // Silver
@@ -38,14 +37,12 @@ public class LeaderboardUI : MonoBehaviour
                 _ => defaultColor
             };
         }
-
         if (rankText != null && rank <= 3)
         {
             rankText.fontStyle = FontStyles.Bold;
             rankText.fontSize += 2;
         }
     }
-
     private string FormatTime(float seconds)
     {
         int minutes = Mathf.FloorToInt(seconds / 60f);
