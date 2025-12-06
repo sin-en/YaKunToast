@@ -12,7 +12,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 4755b35b590504809a7525fd2109c2e2
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
   - enabled: 0
     path: Assets/Scenes/SampleScene 1.unity
     guid: 0d86f6da415508d4bbcc28a4a30e7532

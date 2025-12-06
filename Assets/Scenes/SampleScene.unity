@@ -7510,6 +7510,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     - target: {fileID: 3232958271482099793, guid: 6a28cdd6b09efb941898a187fbaa176f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -7578,6 +7579,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     - target: {fileID: 5855930831427213149, guid: 6a28cdd6b09efb941898a187fbaa176f, type: 3}
