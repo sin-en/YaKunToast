@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ya Kun Kaya Toast - Singapore's Heritage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showHome()"><img src="https://www.yakun.com/sites/all/themes/yakun/logo.png" alt="Ya Kun Logo" class="logo"></a></li>
+            <li><a href="#" onclick="showHome()">Home</a></li>
+            <li><a href="#" onclick="showSection('history')">History</a></li>
+            <li><a href="#" onclick="showSection('ingredients')">Ingredients</a></li>
+            <li><a href="#" onclick="showSection('locations')">Locations</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero" id="hero">
+        <h1>Ya Kun Kaya Toast</h1>
+        <p>Singapore's Beloved Breakfast Tradition Since 1944</p>
+    </div>
+
+    <!-- Home Page - Section Cards -->
+    <div class="sections-container" id="home">
+        <div class="section-card" onclick="showSection('history')">
+            <div class="icon">📜</div>
+            <h2>Our History</h2>
+            <p>Discover the rich heritage and story behind Ya Kun Kaya Toast, from humble beginnings to a beloved Singapore institution.</p>
+        </div>
+
+        <div class="section-card" onclick="showSection('ingredients')">
+            <div class="icon">🥥</div>
+            <h2>Ingredients</h2>
+            <p>Learn about the authentic ingredients that make our kaya toast special, from coconut to pandan leaves.</p>
+        </div>
+
+        <div class="section-card" onclick="showSection('locations')">
+            <div class="icon">📍</div>
+            <h2>Locations</h2>
+            <p>Find Ya Kun Kaya Toast outlets near you across Singapore and beyond.</p>
+        </div>
+    </div>
+
+    
+
+    <!-- History Section -->
+    <div class="content-section" id="history">
+        <h2>Our History</h2>
+        
+        <p>Ya Kun Kaya Toast began in 1944 when Loi Ah Koon started selling coffee, toast, and soft-boiled eggs from a small coffee stall in Tanjong Pagar. The name "Ya Kun" comes from his name - "Ya" meaning uncle in Hokkien, and "Kun" from Ah Koon.</p>
+        
+        <h3>The Founding Years</h3>
+        <div class="history-content-with-image">
+            <div class="history-text">
+                <p>During the post-war period, Ah Koon's simple yet delicious breakfast offerings quickly became popular among local workers and residents. His secret kaya recipe, made with coconut milk, eggs, and pandan, was passed down through generations.</p>
+            </div>
+            <div class="history-side-image">
+                <img src="https://i.pinimg.com/736x/2f/a3/4f/2fa34f631ec73c46111c8f1ac065c39b.jpg" alt="Traditional Coffee Making">
+            </div>
+        </div>
+
+        <div class="history-image">
+            <img src="https://vulcanpost.com/wp-content/uploads/2023/06/ya-kun-old.jpeg" alt="Vintage Coffee Shop">
+        </div>
+        
+        <h3>Family Legacy</h3>
+        <p>The business was carried on by Ah Koon's son and later by his grandson, Adrin Loi, who modernized and expanded the brand while keeping the traditional recipes and methods intact. Today, Ya Kun maintains the same charcoal grilling technique and authentic kaya recipe that made it famous.</p>
+        
+        <div class="history-image">
+            <img src="https://vulcanpost.com/wp-content/uploads/2023/06/jesher-yakun.jpeg" alt="Charcoal Grilling">
+        </div>
+        
+        <h3>Modern Era</h3>
+        <p>From a single stall, Ya Kun has grown into an international chain with outlets across Asia and beyond, becoming a symbol of Singapore's food heritage. Despite its growth, Ya Kun remains committed to preserving the authentic taste and experience that customers have loved for generations.</p>
+        
+        <div class="history-image">
+            <img src="https://vulcanpost.com/wp-content/uploads/2023/06/How-Ya-Kun-streamlines-its-HR-flow-1280x640-1.jpeg" alt="Modern Ya Kun Restaurant">
+        </div>
+        
+        <button class="back-btn" onclick="showHome()">Back to Home</button>
+    </div>
+
+    <!-- Ingredients Section -->
+    <div class="content-section" id="ingredients">
+        <h2>Our Ingredients</h2>
+        <p>Ya Kun's signature taste comes from using only the finest, traditional ingredients prepared with time-honored methods.</p>
+        
+        <div class="ingredient-list">
+            <h3>Kaya (Coconut Egg Jam)</h3>
+            <p><strong>Main ingredients:</strong></p>
+            <p>• <strong>Coconut Milk:</strong> Fresh, rich coconut milk forms the creamy base of our kaya</p>
+            <p>• <strong>Eggs:</strong> Fresh eggs give the kaya its custard-like texture and golden color</p>
+            <p>• <strong>Sugar:</strong> The perfect amount of sweetness to balance the rich coconut flavor</p>
+            <p>• <strong>Pandan Leaves:</strong> Aromatic pandan adds a distinctive fragrance and natural green tint</p>
+        </div>
+
+        <div class="ingredient-list">
+            <h3>The Toast</h3>
+            <p>• <strong>Traditional Bread:</strong> Made daily using a special recipe that's been perfected over decades</p>
+            <p>• <strong>Charcoal Grilling:</strong> Toasted over charcoal flames for that distinctive smoky aroma and crispy texture</p>
+            <p>• <strong>Butter:</strong> Generous slabs of cold butter that melt into the hot toast</p>
+        </div>
+
+        <div class="ingredient-list">
+            <h3>Coffee & Beverages</h3>
+            <p>• <strong>Premium Coffee Beans:</strong> A special blend roasted to perfection</p>
+            <p>• <strong>Condensed Milk:</strong> For the signature sweet and creamy kopi</p>
+            <p>• <strong>Traditional Brew Method:</strong> Using the sock filter technique for authentic taste</p>
+        </div>
+
+        <h3>The Traditional Method</h3>
+        <p>What makes Ya Kun special is not just the ingredients, but how they're prepared. The kaya is still made using the traditional slow-cooking method, stirred constantly over low heat for hours to achieve the perfect consistency. The bread is toasted over charcoal fires, giving it a unique texture and flavor that can't be replicated by modern toasters.</p>
+        
+        <button class="back-btn" onclick="showHome()">Back to Home</button>
+    </div>
+
+    <!-- Locations Section -->
+    <div class="content-section" id="locations">
+        <h2>Our Locations</h2>
+        <p>Ya Kun Kaya Toast has expanded from a single stall to numerous outlets across Singapore and internationally.</p>
+        
+        <h3>Singapore Outlets</h3>
+        <div class="location-item">
+            <h4>Ya Kun Far East Square (Original)</h4>
+            <p>📍 18 China Street, #01-01, Far East Square, Singapore 049560</p>
+            <p>⏰ Mon-Fri: 7:30am - 7:00pm | Sat-Sun: 9:00am - 4:00pm</p>
+        </div>
+
+        <div class="location-item">
+            <h4>Ya Kun Raffles City</h4>
+            <p>📍 252 North Bridge Road, #B1-34, Raffles City Shopping Centre</p>
+            <p>⏰ Daily: 8:00am - 9:00pm</p>
+        </div>
+
+        <div class="location-item">
+            <h4>Ya Kun Changi Airport</h4>
+            <p>📍 Terminal 2 & Terminal 3, Changi Airport</p>
+            <p>⏰ Daily: 6:00am - 11:00pm</p>
+        </div>
+
+        <h3>International Presence</h3>
+        <p>Ya Kun has expanded its presence beyond Singapore, with outlets in:</p>
+        <div class="location-item">
+            <p>🌏 Malaysia | Indonesia | Philippines | South Korea | Japan | China | Myanmar | Taiwan</p>
+        </div>
+
+        <p style="margin-top: 2rem; font-style: italic;">For the most updated list of outlets and operating hours, please visit the official Ya Kun website or contact individual outlets directly.</p>
+        
+        <button class="back-btn" onclick="showHome()">Back to Home</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Ya Kun Kaya Toast. A Singapore Heritage Brand Since 1944.</p>
+        <p>Preserving Tradition, One Toast at a Time.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
