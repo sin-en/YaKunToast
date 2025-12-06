@@ -5,7 +5,6 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
-
     //Screen object variables
     public GameObject loginUI;
     public GameObject signUpUI;
@@ -22,7 +21,6 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
     }
-
     //Functions to change the login screen UI
     public void LoginScreen() //Back button
     {

@@ -47,3 +47,23 @@ MonoBehaviour:
     m_SpecifySize: 1
     m_Name: Bread
     m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 4887789005564273910
+      m_GuidHigh: 7837780989110348180
+    m_SerializedTextureGuid:
+      m_GuidLow: 6806080799403316488
+      m_GuidHigh: 793650020214408904
+    m_Size: {x: 0.1587, y: 0.2245}
+    m_SpecifySize: 1
+    m_Name: Egg
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 4848419941293494588
+      m_GuidHigh: 4449023285597566868
+    m_SerializedTextureGuid:
+      m_GuidLow: 14493813286573948603
+      m_GuidHigh: 14033033904475971531
+    m_Size: {x: 0.1587, y: 0.2245}
+    m_SpecifySize: 1
+    m_Name: Kopi
+    m_Texture: {fileID: 0}
