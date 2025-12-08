@@ -4,6 +4,7 @@ using UnityEngine.PlayerLoop;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     public int itemsCollected = 0;
     public int totalItems = 5;
     public Timer timerScript;
-    private List<string> collectedItemIds = new List<string>();
+    public List<string> collectedItemIds = new List<string>();
     private void Awake()
     {
         // Ensure that there is only one instance of GameManager

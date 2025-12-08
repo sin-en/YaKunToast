@@ -1,13 +1,17 @@
 using UnityEngine;
+using System.Collections;
 
 public class ButtonBehaviour : MonoBehaviour
 {
+    GameManager gameManager;
     [SerializeField]
-    private GameObject targetObject; // Assign the root of item in Inspector
+    private GameObject targetObject; 
+    [SerializeField]
+    private GameObject historyUI;
     public bool isCollected;
     public string itemId;
     public string itemName;
-
+    
     void Awake()
     {
         if (string.IsNullOrEmpty(itemId))
@@ -15,7 +19,20 @@ public class ButtonBehaviour : MonoBehaviour
             itemId = gameObject.name;
         }
     }
-
+    
+    void Start()
+    {
+        CheckIfCollected();
+    }
+    
+    private void CheckIfCollected()
+    {
+        if (GameManager.instance != null)
+        {
+            isCollected = GameManager.instance.collectedItemIds.Contains(itemId);
+        }
+    }
+    
     public void ToggleMeshRenderer()
     {
         MeshRenderer[] renderers = targetObject.GetComponentsInChildren<MeshRenderer>();
@@ -24,14 +41,44 @@ public class ButtonBehaviour : MonoBehaviour
             r.enabled = !r.enabled;
         }
     }
-
+    
+    public void OnButtonClick()
+    {
+        CheckIfCollected();
+        if (isCollected)
+        {
+            if (GameManager.instance != null && GameManager.instance.collectedtxt != null)
+            {
+                StartCoroutine(ShowCollectedMessage());
+            }
+        }
+        else
+        {
+            if (historyUI != null)
+            {
+                historyUI.SetActive(true);
+            }
+        }
+    }
+    
+    private IEnumerator ShowCollectedMessage()
+    {
+        GameManager.instance.collectedtxt.text = "Item already collected!";
+        yield return new WaitForSeconds(2f);
+        GameManager.instance.collectedtxt.text = "";
+    }
+    
     public void CollectItem()
     {
         isCollected = true;
         if (GameManager.instance != null)
-            {
-                GameManager.instance.CollectItem(itemId, itemName);
-            }
+        {
+            GameManager.instance.CollectItem(itemId, itemName);
+        }
+        if (historyUI != null)
+        {
+            historyUI.SetActive(false);
+        }
     }
 }
 
