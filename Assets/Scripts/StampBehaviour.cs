@@ -7,6 +7,7 @@ public class StampBehaviour : MonoBehaviour
     public bool isCollected;
     Animator stampAnim;
     public GameObject stampGameObject;
+    public GameObject historyUI;
     
     void Awake()
     {
@@ -30,12 +31,16 @@ public class StampBehaviour : MonoBehaviour
     }
     public void DeactivateStamp()
     {
+        if (stampGameObject != null)
+        {
+        Debug.Log("Deactivating stamp and history UI");
         stampAnim.SetBool("isStamp", false);
-        StartCoroutine(DeactivateAfterDelay(0.5f));
-    }
-    private IEnumerator DeactivateAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
         stampGameObject.SetActive(false);
+        historyUI.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
