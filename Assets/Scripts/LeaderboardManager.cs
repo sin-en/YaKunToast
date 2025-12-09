@@ -1,26 +1,28 @@
-using TMPro;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System;
 
 public class LeaderboardManager : MonoBehaviour
 {
     [Header("Firebase References")]
     private FirebaseAuth auth;
     private DatabaseReference dbReference;
+
     [Header("UI References")]
     public GameObject leaderboardEntryPrefab;
     public Transform leaderboardContainer;
+
     private int totalUsers = 0;
-    private async void Awake()
+
+    private void Awake()
     {
         InitializeFirebase();    
     }
+
     private void InitializeFirebase()
     {
         auth = FirebaseAuth.DefaultInstance;
@@ -28,12 +30,13 @@ public class LeaderboardManager : MonoBehaviour
         
         Debug.Log("LeaderboardManager initialized");
     }
+
     #region Submit Score
     public void SubmitScore(float completionTime)
     {
         if (auth.CurrentUser == null)
         {
-            Debug.LogError("No user logged in!");
+            Debug.LogError("Cannot submit score - user not logged in!");
             return;
         }
         StartCoroutine(SubmitScoreCoroutine(auth.CurrentUser.UserId, auth.CurrentUser.DisplayName, completionTime));
@@ -49,9 +52,12 @@ public class LeaderboardManager : MonoBehaviour
             completionTime = completionTime,
             timestamp = GetCurrentTimestamp()
         };
+
         string json = JsonUtility.ToJson(leaderboardEntry);
+        
         var submitTask = dbReference.Child("leaderboard").Child(userId).SetRawJsonValueAsync(json);
         yield return new WaitUntil(() => submitTask.IsCompleted);
+
         if (submitTask.Exception != null)
         {
             Debug.LogError($"Failed to submit score: {submitTask.Exception}");
@@ -62,16 +68,19 @@ public class LeaderboardManager : MonoBehaviour
             yield return StartCoroutine(UpdateUserBestTime(userId, completionTime));
         }
     }
+
     private IEnumerator UpdateUserBestTime(string userId, float newTime)
     {
         var userRef = dbReference.Child("users").Child(userId);
         var getTask = userRef.GetValueAsync();
         yield return new WaitUntil(() => getTask.IsCompleted);
+
         if (getTask.Exception != null)
         {
             Debug.LogError($"Failed to get user data: {getTask.Exception}");
             yield break;
         }
+
         DataSnapshot snapshot = getTask.Result;
         if (snapshot.Exists)
         {
@@ -105,26 +114,34 @@ public class LeaderboardManager : MonoBehaviour
     {
         StartCoroutine(FetchLeaderboardData());
     }
+
     private IEnumerator FetchLeaderboardData()
     {
         ClearLeaderboard();
+
         var dbTask = dbReference.Child("leaderboard")
             .OrderByChild("completionTime")
             .LimitToFirst(10)
             .GetValueAsync();
+
         yield return new WaitUntil(() => dbTask.IsCompleted);
+
         if (dbTask.Exception != null)
         {
             Debug.LogWarning($"Failed to fetch leaderboard data: {dbTask.Exception}");
             yield break;
         }
+
         DataSnapshot snapshot = dbTask.Result;
+        
         if (!snapshot.Exists)
         {
             Debug.Log("No leaderboard data found");
             yield break;
         }
+
         List<LeaderboardEntry> leaderboardEntries = new List<LeaderboardEntry>();
+
         foreach (DataSnapshot childSnapshot in snapshot.Children)
         {
             try
@@ -139,6 +156,7 @@ public class LeaderboardManager : MonoBehaviour
                 Debug.LogError($"Error parsing leaderboard entry: {ex.Message}");
             }
         }
+
         totalUsers = leaderboardEntries.Count;
         Debug.Log($"Total leaderboard entries: {totalUsers}");
 
@@ -152,16 +170,15 @@ public class LeaderboardManager : MonoBehaviour
             Debug.LogError("Leaderboard prefab or container not assigned!");
             return;
         }
+
         for (int i = 0; i < entries.Count; i++)
         {
             LeaderboardEntry entry = entries[i];
             int rank = i + 1;
 
-            // Instantiate the leaderboard entry UI
             GameObject entryObj = Instantiate(leaderboardEntryPrefab, leaderboardContainer);
             entryObj.transform.localScale = Vector3.one;
 
-            // Get the LeaderboardUI component and populate it
             LeaderboardUI entryUI = entryObj.GetComponent<LeaderboardUI>();
             if (entryUI != null)
             {
@@ -169,10 +186,11 @@ public class LeaderboardManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("LeaderboardEntryUI component not found on prefab!");
+                Debug.LogWarning("LeaderboardUI component not found on prefab!");
             }
         }
     }
+
     private void ClearLeaderboard()
     {
         if (leaderboardContainer == null) return;
@@ -183,16 +201,13 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
     #endregion
+
     #region Get Player Rank
     public void GetMyRank()
     {
-        if (auth.CurrentUser == null)
-        {
-            Debug.LogError("No user logged in!");
-            return;
-        }
         StartCoroutine(GetPlayerRankCoroutine(auth.CurrentUser.UserId));
     }
+
     private IEnumerator GetPlayerRankCoroutine(string userId)
     {
         // Get player's time
@@ -204,29 +219,35 @@ public class LeaderboardManager : MonoBehaviour
             Debug.Log("Player has no leaderboard entry yet");
             yield break;
         }
+
         string json = playerTask.Result.GetRawJsonValue();
         LeaderboardEntry playerEntry = JsonUtility.FromJson<LeaderboardEntry>(json);
         float playerTime = playerEntry.completionTime;
+
         var rankTask = dbReference.Child("leaderboard")
             .OrderByChild("completionTime")
             .EndAt(playerTime)
             .GetValueAsync();
 
         yield return new WaitUntil(() => rankTask.IsCompleted);
+
         if (rankTask.Exception != null)
         {
             Debug.LogError($"Failed to get rank: {rankTask.Exception}");
             yield break;
         }
+
         int rank = (int)rankTask.Result.ChildrenCount;
         Debug.Log($"Your rank: {rank} with time: {playerTime}s");
     }
     #endregion
+
     #region Utilities
     private long GetCurrentTimestamp()
     {
         return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
+
     public string FormatTime(float seconds)
     {
         TimeSpan time = TimeSpan.FromSeconds(seconds);

@@ -7,7 +7,6 @@ public class LeaderboardUI : MonoBehaviour
     public TMP_Text rankText;
     public TMP_Text playerNameText;
     public TMP_Text timeText;
-    public Image backgroundImage;
     [Header("Rank Colors")]
     public Color firstPlaceColor = new Color(1f, 0.84f, 0f); // Gold
     public Color secondPlaceColor = new Color(0.75f, 0.75f, 0.75f); // Silver
@@ -15,32 +14,39 @@ public class LeaderboardUI : MonoBehaviour
     public Color defaultColor = Color.white;
     public void SetEntry(int rank, string playerName, float completionTime)
     {
-        // Set rank
+        Color rankColor = rank switch
+        {
+            1 => firstPlaceColor,
+            2 => secondPlaceColor,
+            3 => thirdPlaceColor,
+            _ => defaultColor
+        };
+        // Set rank text
         if (rankText != null)
+        {
             rankText.text = $"#{rank}";
-
-        // Set player name
-        if (playerNameText != null)
-            playerNameText.text = playerName;
-
-        // Set time with formatting
-        if (timeText != null)
-            timeText.text = FormatTime(completionTime);
-
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = rank switch
+            rankText.color = rankColor;
+            
+            // Make top 3 bigger
+            if (rank <= 3)
             {
-                1 => firstPlaceColor,
-                2 => secondPlaceColor,
-                3 => thirdPlaceColor,
-                _ => defaultColor
-            };
+                rankText.fontSize += 2;
+            }
         }
-        if (rankText != null && rank <= 3)
+
+        // Set player name text
+        if (playerNameText != null)
         {
-            rankText.fontStyle = FontStyles.Bold;
-            rankText.fontSize += 2;
+            playerNameText.text = playerName;
+            playerNameText.color = rankColor;
+            
+        }
+
+        // Set time text
+        if (timeText != null)
+        {
+            timeText.text = FormatTime(completionTime);
+            timeText.color = rankColor;
         }
     }
     private string FormatTime(float seconds)
