@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 26/11/2025
+* Description: Manages the in-game timer functionality
+*/
 using System.Collections;
 using UnityEngine;
 using Firebase;
@@ -20,12 +25,18 @@ public class Timer : MonoBehaviour
     private FirebaseAuth auth;
     private DatabaseReference dbReference;
 
+    /// <summary>
+    /// Initializes Firebase references
+    /// </summary>
     private void Awake()
     {
         auth = FirebaseAuth.DefaultInstance;
         dbReference = FirebaseDatabase.DefaultInstance.RootReference;
     }
 
+    /// <summary>
+    /// Updates the timer every frame when running
+    /// </summary>
     private void Update()
     {
         if (isRunning)
@@ -97,6 +108,11 @@ public class Timer : MonoBehaviour
     #endregion
 
     #region Save to Firebase
+    /// <summary>
+    /// Saves the completion time to Firebase and submits to leaderboard
+    /// </summary>
+    /// <param name="completionTime"></param>
+    /// <returns></returns>
     private IEnumerator SaveCompletionTimeCoroutine(float completionTime)
     {
         // Submit to leaderboard manager (this handles all Firebase saving)
@@ -115,6 +131,9 @@ public class Timer : MonoBehaviour
     #endregion
 
     #region UI Display
+    /// <summary>
+    /// Updates the timer display UI
+    /// </summary>
     private void UpdateTimerDisplay()
     {
         if (timerText != null)
@@ -123,6 +142,11 @@ public class Timer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Formats time in seconds to a string MM:SS.mm
+    /// </summary>
+    /// <param name="timeInSeconds"></param>
+    /// <returns></returns>
     private string FormatTime(float timeInSeconds)
     {
         int minutes = Mathf.FloorToInt(timeInSeconds / 60f);

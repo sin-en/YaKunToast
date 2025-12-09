@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 15/11/2025
+* Description: Represents a player with unique ID, name, email, time taken, and collected items.
+*/
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +17,7 @@ public class Player
     public bool completedSet;
     public string completedAt;
 
-    // Default constructor (required for JsonUtility)
+    // Default constructor
     public Player() 
     {
         this.itemsCollected = new List<Inventory>();

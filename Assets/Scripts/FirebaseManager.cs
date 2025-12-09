@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 15/11/2025
+* Description: Manages Firebase authentication and database operations
+*/
 using System;
 using System.Collections;
 using System.Threading.Tasks;
@@ -40,8 +45,12 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     [Header("Scene Management")]
-    public int sceneIndex = 1; // Index of the scene to load after login
+    public int sceneIndex = 1;
+
     #region Unity Lifecycle
+    /// <summary>
+    /// Initializes singleton instance of FirebaseManager and Firebase services.
+    /// </summary>
     private async void Awake()
     {
         if (instance == null)
@@ -56,7 +65,10 @@ public class FirebaseManager : MonoBehaviour
         }
         await InitializeFirebase();
     }
-
+    
+    /// <summary>
+    /// Sets up button listeners on start.  
+    /// </summary>
     private void Start()
     {
         if (btnLogin != null)
@@ -68,6 +80,9 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Firebase Initialization
+    /// <summary>
+    /// Initializes Firebase services asynchronously.
+    /// </summary>
     private async Task<bool> InitializeFirebase()
     {
         var dependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
@@ -89,11 +104,20 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Authentication - Login
+    /// <summary>
+    /// Handles login button click event.
+    /// </summary>
     public void LoginButton()
     {
         StartCoroutine(LoginCoroutine(loginEmailField.text, loginPasswordField.text));
     }
 
+    /// <summary>
+    /// Performs user login asynchronously.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
     private IEnumerator LoginCoroutine(string email, string password)
     {
         warningLoginText.text = "";
@@ -135,6 +159,9 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Authentication - Signup
+    /// <summary>
+    /// Handles signup button click event.
+    /// </summary>
     public void SignupButton()
     {
         if (btnSignup != null)
@@ -143,6 +170,9 @@ public class FirebaseManager : MonoBehaviour
         StartCoroutine(SignupCoroutine(signupEmailField.text, signupPasswordField.text, signupUsernameField.text));
     }
 
+    /// <summary>
+    /// Performs user signup asynchronously.
+    /// </summary>
     private IEnumerator SignupCoroutine(string email, string password, string username)
     {
         warningSignupText.text = "";
@@ -212,13 +242,16 @@ public class FirebaseManager : MonoBehaviour
         // Re-enable button
         if (btnSignup != null) btnSignup.interactable = true;
 
-        // Navigate to login screen if UIManager exists
+        // Navigate to login screen
         if (UIManager.instance != null)
             UIManager.instance.LoginScreen();
     }
     #endregion
 
     #region Authentication - Utilities
+    /// <summary>
+    /// Signs out the current user.
+    /// </summary>
     public void SignOut()
     {
         if (auth != null && user != null)
@@ -229,11 +262,19 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if a user is currently logged in.
+    /// </summary>
+    /// <returns>True if a user is logged in; otherwise, false.</returns>
     public bool IsUserLoggedIn()
     {
         return user != null;
     }
 
+    /// <summary>
+    /// Retrieves the currently logged-in user.
+    /// </summary>
+    /// <returns>FirebaseUser object of the current user.</returns>
     public FirebaseUser GetCurrentUser()
     {
         return user;
@@ -241,6 +282,9 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Database - CRUD Operations
+    /// <summary>
+    /// Creates a new user entry in the Firebase Realtime Database.
+    /// </summary>
     private IEnumerator CreateUserInDatabaseCoroutine(string userId, string username, string email)
     {
         var playerData = new Player
@@ -266,6 +310,11 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Loads user data from the Firebase Realtime Database.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     private IEnumerator LoadUserDataCoroutine(string userId)
     {
         var dataTask = dbReference.Child("users").Child(userId).GetValueAsync();
@@ -290,6 +339,11 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Retrieves player data asynchronously.
+    /// </summary>
+    /// <param name="playerId">The ID of the player to retrieve data for.</param>
+    /// <returns>A Task representing the asynchronous operation, with a Player object as the result.</returns>
     public async Task<Player> GetPlayerData(string playerId)
     {
         try
@@ -313,6 +367,11 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates player data asynchronously.
+    /// </summary>
+    /// <param name="userId">The ID of the user to update data for.</param>
+    /// <param name="playerData">The Player object containing updated data.</param>
     public async Task UpdateUserData(string userId, Player playerData)
     {
         try
@@ -327,6 +386,10 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Deletes user data asynchronously.
+    /// </summary>
+    /// <param name="userId">The ID of the user to delete data for.</param>
     public async Task DeleteUserData(string userId)
     {
         try
@@ -342,6 +405,10 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Player Management
+    /// <summary>
+    /// Handles add player button click event.
+    /// </summary>
+    /// <returns></returns>
     public async Task OnAddPlayerClick()
     {
         var playerName = signupUsernameField.text.Trim();
@@ -355,6 +422,9 @@ public class FirebaseManager : MonoBehaviour
     #endregion
 
     #region Error Messages
+    /// <summary>
+    /// Maps Firebase AuthError codes to feedback messages.
+    /// </summary>
     private string GetAuthErrorMessage(AuthError errorCode)
     {
         return errorCode switch
