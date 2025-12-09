@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 26/11/2025
+* Description: Manages the UI elements for displaying leaderboard entries in the Unity game
+*/
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -12,6 +17,13 @@ public class LeaderboardUI : MonoBehaviour
     public Color secondPlaceColor = new Color(0.75f, 0.75f, 0.75f); // Silver
     public Color thirdPlaceColor = new Color(0.8f, 0.5f, 0.2f); // Bronze
     public Color defaultColor = Color.white;
+
+    /// <summary>
+    /// Sets the leaderboard entry UI based on rank, player name, and completion time.
+    /// </summary>
+    /// <param name="rank"></param>
+    /// <param name="playerName"></param>
+    /// <param name="completionTime"></param>
     public void SetEntry(int rank, string playerName, float completionTime)
     {
         Color rankColor = rank switch
@@ -26,14 +38,12 @@ public class LeaderboardUI : MonoBehaviour
         {
             rankText.text = $"#{rank}";
             rankText.color = rankColor;
-            
             // Make top 3 bigger
             if (rank <= 3)
             {
                 rankText.fontSize += 2;
             }
         }
-
         // Set player name text
         if (playerNameText != null)
         {
@@ -41,7 +51,6 @@ public class LeaderboardUI : MonoBehaviour
             playerNameText.color = rankColor;
             
         }
-
         // Set time text
         if (timeText != null)
         {
@@ -49,12 +58,17 @@ public class LeaderboardUI : MonoBehaviour
             timeText.color = rankColor;
         }
     }
+
+    /// <summary>
+    /// Formats time in seconds to a string MM:SS.mmm
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
     private string FormatTime(float seconds)
     {
         int minutes = Mathf.FloorToInt(seconds / 60f);
         int secs = Mathf.FloorToInt(seconds % 60f);
         int milliseconds = Mathf.FloorToInt((seconds * 1000f) % 1000f);
-        
         return $"{minutes:00}:{secs:00}.{milliseconds:000}";
     }
 }

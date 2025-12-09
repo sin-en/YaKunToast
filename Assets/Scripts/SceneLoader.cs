@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 26/11/2025
+* Description: Handles scene loading functionalities
+*/
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;

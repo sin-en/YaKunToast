@@ -42,22 +42,6 @@ public class GameMenuManager : MonoBehaviour
     #endregion
 
     #region Button Callbacks
-    // public void OnGameButton()
-    // {
-    //     // Check if user is logged in
-    //     if (FirebaseManager.instance != null && FirebaseManager.instance.IsUserLoggedIn())
-    //     {
-    //         // Load game scene (index 1)
-    //         SceneManager.LoadScene(1);
-    //     }
-    //     else
-    //     {
-    //         Debug.LogWarning("Please log in first!");
-    //         // Optionally show a message to the user
-    //         // Or redirect to login scene
-    //     }
-    // }
-
     public void OnLeaderboardButton()
     {
         ShowLeaderboard();

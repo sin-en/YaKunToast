@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+* Author: Kwek Sin En
+* Date: 15/11/2025
+* Description: Manages UI screens such as login and registration
+*/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +14,9 @@ public class UIManager : MonoBehaviour
     public GameObject loginUI;
     public GameObject signUpUI;
 
+    /// <summary>
+    /// Initializes singleton instance of UIManager.
+    /// </summary>
     private void Awake()
     {
         if (instance == null)
@@ -21,12 +29,18 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
     }
-    //Functions to change the login screen UI
+
+    /// <summary>
+    /// Switches to the login screen UI.
+    /// </summary>
     public void LoginScreen() //Back button
     {
         loginUI.SetActive(true);
         signUpUI.SetActive(false);
     }
+    /// <summary>
+    /// Switches to the registration screen UI.
+    /// </summary>
     public void RegisterScreen() // Regester button
     {
         loginUI.SetActive(false);

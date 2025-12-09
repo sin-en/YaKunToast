@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 16/11/2025
+* Description: Manages multiple image tracking in the Unity AR game
+*/
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +15,10 @@ public class MultipleImageTrackingManager : MonoBehaviour
     List<GameObject> prefabsToSpawn = new List<GameObject>();
     private ARTrackedImageManager trackedImageManager;
     private Dictionary<string, GameObject> arObjects;
+
+    /// <summary>
+    /// Initializes the ARTrackedImageManager and sets up scene elements.
+    /// </summary>
     private void Start()
     {
         trackedImageManager = GetComponent<ARTrackedImageManager>();
@@ -18,11 +27,18 @@ public class MultipleImageTrackingManager : MonoBehaviour
         arObjects = new Dictionary<string, GameObject>();
         SetupSceneElements();
     }
+
+    /// <summary>
+    /// Cleans up event listeners on destroy.
+    /// </summary>
     private void OnDestroy()
     {
         trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
-    //Setup Scene Elements
+
+    /// <summary>
+    /// Setup Scene Elements
+    /// </summary>
     private void SetupSceneElements()
     {
         foreach (var prefab in prefabsToSpawn)
@@ -38,6 +54,11 @@ public class MultipleImageTrackingManager : MonoBehaviour
             arObjects.Add(arObject.name, arObject);
         }
     }
+
+    /// <summary>
+    /// Handles changes in tracked images.
+    /// </summary>
+    /// <param name="eventArgs"></param>
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
         foreach (var trackedImage in eventArgs.added)
@@ -55,6 +76,11 @@ public class MultipleImageTrackingManager : MonoBehaviour
             UpdateARObject(trackedImage.Value);
         }
     }
+
+    /// <summary>
+    /// Updates the AR object corresponding to the tracked image.
+    /// </summary>
+    /// <param name="trackedImage"></param>
     private void UpdateARObject(ARTrackedImage trackedImage)
     {
         if(trackedImage == null) return;

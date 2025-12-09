@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 4/12/2025
+* Description: Manages overall game state, item collection, timer, and UI updates
+*/
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +26,10 @@ public class GameManager : MonoBehaviour
     [Header("References")]
     public Timer timerScript;
     public LeaderboardManager leaderboardManager;
-
+    #region Unity Lifecycle
+    /// <summary>
+    /// Initializes singleton instance of GameManager.
+    /// </summary>
     private void Awake()
     {
         if (instance == null)
@@ -34,14 +42,18 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    /// <summary>
+    /// Initializes game state and UI on start.
+    /// </summary>
     void Start()
     {
         UpdateItemsUI();
         UpdateTimerUI();
         LoadCollectedItems();
     }
-
+    /// <summary>
+    /// Updates timer UI every frame when timer is running.
+    /// </summary>
     void Update()
     {
         if (timerScript != null && timerScript.IsTimerRunning())
@@ -49,8 +61,11 @@ public class GameManager : MonoBehaviour
             UpdateTimerUI();
         }
     }
-
+    #endregion
     #region UI Updates
+    /// <summary>
+    /// Updates timer UI.
+    /// </summary>
     void UpdateTimerUI()
     {
         if (timerScript != null && timerText != null)
@@ -58,7 +73,9 @@ public class GameManager : MonoBehaviour
             timerText.text = "Time: " + timerScript.GetFormattedTime();
         }
     }
-
+    /// <summary>
+    /// Updates items collected UI.
+    /// </summary>
     private void UpdateItemsUI()
     {
         if (itemsCountText != null)
@@ -67,8 +84,10 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Load Data
+    /// <summary>
+    /// Loads collected items from Firebase.
+    /// </summary>
     private async void LoadCollectedItems()
     {
         if (FirebaseManager.instance == null || !FirebaseManager.instance.IsUserLoggedIn())
@@ -87,12 +106,15 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Item Collection
+    /// <summary>
+    /// Marks an item as collected, updates UI, and saves to Firebase.
+    /// </summary>
+    /// <param name="itemId"></param>
+    /// <param name="itemName"></param>
     public async void CollectItem(string itemId, string itemName)
     {
         collectedtxt.text = "";
-        
         if (collectedItemIds.Contains(itemId))
         {
             collectedtxt.text = "Item already collected!";
@@ -101,14 +123,12 @@ public class GameManager : MonoBehaviour
             Debug.Log($"Item {itemId} already collected!");
             return;
         }
-
         // Start timer on first item
         if (itemsCollected == 0 && timerScript != null && !timerScript.IsTimerRunning())
         {
             timerScript.StartTimer();
             Debug.Log("First item collected, timer started!");
         }
-
         itemsCollected++;
         collectedItemIds.Add(itemId);
         UpdateItemsUI();
@@ -122,7 +142,11 @@ public class GameManager : MonoBehaviour
             await CompleteSet();
         }
     }
-
+    /// <summary>
+    /// Saves collected item to Firebase under the user's data.
+    /// </summary>
+    /// <param name="itemId"></param>
+    /// <param name="itemName"></param>
     private async Task SaveItemToFirebase(string itemId, string itemName)
     {
         if (FirebaseManager.instance == null || !FirebaseManager.instance.IsUserLoggedIn())
@@ -145,14 +169,17 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Set Completion
+    /// <summary>
+    /// Handles actions upon completing the full set of items.
+    /// </summary>
     private async Task CompleteSet()
     {
         Debug.Log("Set Complete! All 5 items collected!");
         
         if (timerScript != null)
         {
+            // Stop the timer and get final time
             timerScript.StopTimer();
             float finalTime = timerScript.GetCurrentTime();
             Debug.Log($"Final completion time: {timerScript.GetFormattedTime()}");
@@ -164,14 +191,16 @@ public class GameManager : MonoBehaviour
             if (leaderboardManager != null)
             {
                 leaderboardManager.SubmitScore(finalTime);
-                
                 // Show leaderboard after a delay
                 await Task.Delay(2000);
                 leaderboardManager.ShowLeaderboard();
             }
         }
     }
-
+    /// <summary>
+    /// Saves set completion data to Firebase.
+    /// </summary>
+    /// <param name="completionTime"></param>
     private async Task SaveSetCompletion(float completionTime)
     {
         if (FirebaseManager.instance == null || !FirebaseManager.instance.IsUserLoggedIn())
@@ -193,8 +222,10 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Scene Management
+    /// <summary>
+    /// Shows or hides UI elements based on the loaded scene.
+    /// </summary>
     public void ShowUIOnSceneLoad(int sceneIndex)
     {
         if (sceneIndex == 1)
@@ -209,8 +240,10 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
-
     #region Utility
+    /// <summary>
+    /// Quits the application
+    /// </summary>
     public void Quit()
     {
         Debug.Log("Quit");

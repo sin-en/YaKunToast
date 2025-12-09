@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 26/11/2025
+* Description: Handles leaderboard functionalities
+*/
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,11 +23,18 @@ public class LeaderboardManager : MonoBehaviour
 
     private int totalUsers = 0;
 
+    #region Unity Lifecycle
+    /// <summary>
+    /// Initializes Firebase authentication and database references.
+    /// </summary>
     private void Awake()
     {
         InitializeFirebase();    
     }
-
+    
+    /// <summary>
+    /// Initializes Firebase authentication and database references.
+    /// </summary>
     private void InitializeFirebase()
     {
         auth = FirebaseAuth.DefaultInstance;
@@ -30,8 +42,13 @@ public class LeaderboardManager : MonoBehaviour
         
         Debug.Log("LeaderboardManager initialized");
     }
+    #endregion
 
     #region Submit Score
+    /// <summary>
+    /// Submits the player's score to the leaderboard.
+    /// </summary>
+    /// <param name="completionTime"></param>
     public void SubmitScore(float completionTime)
     {
         if (auth.CurrentUser == null)
@@ -42,6 +59,13 @@ public class LeaderboardManager : MonoBehaviour
         StartCoroutine(SubmitScoreCoroutine(auth.CurrentUser.UserId, auth.CurrentUser.DisplayName, completionTime));
     }
 
+    /// <summary>
+    /// Coroutine to submit score to Firebase Realtime Database.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="userName"></param>
+    /// <param name="completionTime"></param>
+    /// <returns></returns>
     private IEnumerator SubmitScoreCoroutine(string userId, string userName, float completionTime)
     {
         // Create leaderboard entry
@@ -69,6 +93,12 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the user's best time if the new time is better.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="newTime"></param>
+    /// <returns></returns>
     private IEnumerator UpdateUserBestTime(string userId, float newTime)
     {
         var userRef = dbReference.Child("users").Child(userId);
@@ -110,11 +140,17 @@ public class LeaderboardManager : MonoBehaviour
     #endregion
 
     #region Fetch and Display Leaderboard
+    /// <summary>
+    /// Fetches and displays leaderboard entries.
+    /// </summary>
     public void ShowLeaderboard()
     {
         StartCoroutine(FetchLeaderboardData());
     }
 
+    /// <summary>
+    /// Coroutine to fetch leaderboard data from Firebase Realtime Database.
+    /// </summary>
     private IEnumerator FetchLeaderboardData()
     {
         ClearLeaderboard();
@@ -163,6 +199,10 @@ public class LeaderboardManager : MonoBehaviour
         DisplayLeaderboard(leaderboardEntries);
     }
 
+    /// <summary>
+    /// Displays leaderboard entries in UI.
+    /// </summary>
+    /// <param name="entries"></param>
     private void DisplayLeaderboard(List<LeaderboardEntry> entries)
     {
         if (leaderboardEntryPrefab == null || leaderboardContainer == null)
@@ -191,6 +231,9 @@ public class LeaderboardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Clears existing leaderboard entries from UI.
+    /// </summary>
     private void ClearLeaderboard()
     {
         if (leaderboardContainer == null) return;
@@ -203,11 +246,17 @@ public class LeaderboardManager : MonoBehaviour
     #endregion
 
     #region Get Player Rank
+    /// <summary>
+    /// Gets the current player's rank in the leaderboard.
+    /// </summary>
     public void GetMyRank()
     {
         StartCoroutine(GetPlayerRankCoroutine(auth.CurrentUser.UserId));
     }
 
+    /// <summary>
+    /// Coroutine to get player's rank from Firebase Realtime Database.
+    /// </summary>
     private IEnumerator GetPlayerRankCoroutine(string userId)
     {
         // Get player's time
@@ -243,11 +292,16 @@ public class LeaderboardManager : MonoBehaviour
     #endregion
 
     #region Utilities
+    /// <summary>
+    /// Gets the current timestamp in seconds.
+    /// </summary>
     private long GetCurrentTimestamp()
     {
         return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
-
+    /// <summary>
+    /// Formats time in seconds to a string MM:SS.mmm
+    /// </summary>
     public string FormatTime(float seconds)
     {
         TimeSpan time = TimeSpan.FromSeconds(seconds);
@@ -257,6 +311,9 @@ public class LeaderboardManager : MonoBehaviour
 }
 
 #region Data Classes
+/// <summary>
+/// Represents a leaderboard entry.
+/// </summary>
 [Serializable]
 public class LeaderboardEntry
 {
