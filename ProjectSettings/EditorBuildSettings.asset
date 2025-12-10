@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene 1.unity
     guid: 0d86f6da415508d4bbcc28a4a30e7532
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SignUpScene.unity
     guid: 40479d38e2c2fc1429484a4ce3368afd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: eb361cee28953c6448fd9ececc9c997c
   - enabled: 0

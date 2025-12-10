@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 26/11/2025
+* Description: Manages the UI elements for displaying leaderboard entries in the Unity game
+*/
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -7,48 +12,63 @@ public class LeaderboardUI : MonoBehaviour
     public TMP_Text rankText;
     public TMP_Text playerNameText;
     public TMP_Text timeText;
-    public Image backgroundImage;
     [Header("Rank Colors")]
     public Color firstPlaceColor = new Color(1f, 0.84f, 0f); // Gold
     public Color secondPlaceColor = new Color(0.75f, 0.75f, 0.75f); // Silver
     public Color thirdPlaceColor = new Color(0.8f, 0.5f, 0.2f); // Bronze
     public Color defaultColor = Color.white;
+
+    /// <summary>
+    /// Sets the leaderboard entry UI based on rank, player name, and completion time.
+    /// </summary>
+    /// <param name="rank"></param>
+    /// <param name="playerName"></param>
+    /// <param name="completionTime"></param>
     public void SetEntry(int rank, string playerName, float completionTime)
     {
-        // Set rank
+        Color rankColor = rank switch
+        {
+            1 => firstPlaceColor,
+            2 => secondPlaceColor,
+            3 => thirdPlaceColor,
+            _ => defaultColor
+        };
+        // Set rank text
         if (rankText != null)
+        {
             rankText.text = $"#{rank}";
-
-        // Set player name
-        if (playerNameText != null)
-            playerNameText.text = playerName;
-
-        // Set time with formatting
-        if (timeText != null)
-            timeText.text = FormatTime(completionTime);
-
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = rank switch
+            rankText.color = rankColor;
+            // Make top 3 bigger
+            if (rank <= 3)
             {
-                1 => firstPlaceColor,
-                2 => secondPlaceColor,
-                3 => thirdPlaceColor,
-                _ => defaultColor
-            };
+                rankText.fontSize += 2;
+            }
         }
-        if (rankText != null && rank <= 3)
+        // Set player name text
+        if (playerNameText != null)
         {
-            rankText.fontStyle = FontStyles.Bold;
-            rankText.fontSize += 2;
+            playerNameText.text = playerName;
+            playerNameText.color = rankColor;
+            
+        }
+        // Set time text
+        if (timeText != null)
+        {
+            timeText.text = FormatTime(completionTime);
+            timeText.color = rankColor;
         }
     }
+
+    /// <summary>
+    /// Formats time in seconds to a string MM:SS.mmm
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
     private string FormatTime(float seconds)
     {
         int minutes = Mathf.FloorToInt(seconds / 60f);
         int secs = Mathf.FloorToInt(seconds % 60f);
         int milliseconds = Mathf.FloorToInt((seconds * 1000f) % 1000f);
-        
         return $"{minutes:00}:{secs:00}.{milliseconds:000}";
     }
 }

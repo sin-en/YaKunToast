@@ -1,3 +1,8 @@
+/*
+* Author: Kwek Sin En
+* Date: 15/11/2025
+* Description: Represents an inventory item with ID, name, and collection timestamp.
+*/
 using System;
 
 [Serializable]
