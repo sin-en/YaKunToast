@@ -49,13 +49,20 @@ public class LeaderboardUI : MonoBehaviour
         {
             playerNameText.text = playerName;
             playerNameText.color = rankColor;
-            
+            if (rank <= 3)
+            {
+                playerNameText.fontSize += 2;
+            }
         }
         // Set time text
         if (timeText != null)
         {
             timeText.text = FormatTime(completionTime);
             timeText.color = rankColor;
+            if (rank <= 3)
+            {
+                timeText.fontSize += 2;
+            }
         }
     }
 
@@ -68,7 +75,6 @@ public class LeaderboardUI : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(seconds / 60f);
         int secs = Mathf.FloorToInt(seconds % 60f);
-        int milliseconds = Mathf.FloorToInt((seconds * 1000f) % 1000f);
-        return $"{minutes:00}:{secs:00}.{milliseconds:000}";
+        return $"{minutes:00}:{secs:00}";
     }
 }
