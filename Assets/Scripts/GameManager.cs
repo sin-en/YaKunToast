@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+
     [Header("UI References")]
     public TextMeshProUGUI itemsCountText;
     public TextMeshProUGUI timerText;
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("References")]
     public Timer timerScript;
     public LeaderboardManager leaderboardManager;
+
     #region Unity Lifecycle
     /// <summary>
     /// Initializes singleton instance of GameManager.
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     /// <summary>
     /// Initializes game state and UI on start.
     /// </summary>
@@ -51,6 +54,7 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
         LoadCollectedItems();
     }
+
     /// <summary>
     /// Updates timer UI every frame when timer is running.
     /// </summary>
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
     #region UI Updates
     /// <summary>
     /// Updates timer UI.
@@ -73,6 +78,7 @@ public class GameManager : MonoBehaviour
             timerText.text = "Time: " + timerScript.GetFormattedTime();
         }
     }
+
     /// <summary>
     /// Updates items collected UI.
     /// </summary>
@@ -84,6 +90,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
     #region Load Data
     /// <summary>
     /// Loads collected items from Firebase.
@@ -106,6 +113,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
     #region Item Collection
     /// <summary>
     /// Marks an item as collected, updates UI, and saves to Firebase.
@@ -142,6 +150,7 @@ public class GameManager : MonoBehaviour
             await CompleteSet();
         }
     }
+
     /// <summary>
     /// Saves collected item to Firebase under the user's data.
     /// </summary>
@@ -169,6 +178,7 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
     #region Set Completion
     /// <summary>
     /// Handles actions upon completing the full set of items.
@@ -197,6 +207,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     /// <summary>
     /// Saves set completion data to Firebase.
     /// </summary>
@@ -222,6 +233,71 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
+    #region Reset Game
+    /// <summary>
+    /// Resets game state for a new session.
+    /// </summary>
+    public async void ResetGame()
+    {
+        Debug.Log("Resetting game...");
+
+        // Reset local game state
+        itemsCollected = 0;
+        collectedItemIds.Clear();
+        
+        // Reset timer
+        if (timerScript != null)
+        {
+            timerScript.ResetTimer();
+        }
+
+        // Update UI
+        UpdateItemsUI();
+        UpdateTimerUI();
+
+        // Clear collected items in Firebase (but keep leaderboard entry and best time)
+        await ClearCollectedItemsInFirebase();
+
+        Debug.Log("Game reset complete! Leaderboard entry preserved.");
+    }
+
+    /// <summary>
+    /// Clears collected items from Firebase for the current user.
+    /// </summary>
+    private async Task ClearCollectedItemsInFirebase()
+    {
+        if (FirebaseManager.instance == null || !FirebaseManager.instance.IsUserLoggedIn())
+            return;
+
+        var user = FirebaseManager.instance.GetCurrentUser();
+        if (user != null)
+        {
+            var playerData = await FirebaseManager.instance.GetPlayerData(user.UserId);
+            if (playerData != null)
+            {
+                playerData.itemsCollected.Clear();
+                playerData.completedSet = false;
+                playerData.completedAt = "";
+                
+                await FirebaseManager.instance.UpdateUserData(user.UserId, playerData);
+                Debug.Log("Collected items cleared in Firebase. Best time preserved.");
+            }
+        }
+    }
+    /// <summary>
+    /// Go back to main menu and reset game
+    /// </summary>
+    public void BackToMenu()
+    {
+        ResetGame();
+        if (GameMenuManager.instance != null)
+        {
+            GameMenuManager.instance.ShowMainMenu();
+        }
+    }
+    #endregion
+
     #region Scene Management
     /// <summary>
     /// Shows or hides UI elements based on the loaded scene.
@@ -238,16 +314,6 @@ public class GameManager : MonoBehaviour
             itemsCountText.gameObject.SetActive(false);
             timerText.gameObject.SetActive(false);
         }
-    }
-    #endregion
-    #region Utility
-    /// <summary>
-    /// Quits the application
-    /// </summary>
-    public void Quit()
-    {
-        Debug.Log("Quit");
-        Application.Quit();
     }
     #endregion
 }
