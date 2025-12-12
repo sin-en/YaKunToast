@@ -3,94 +3,126 @@
 * Date: 16/11/2025
 * Description: Manages multiple image tracking in the Unity AR game
 */
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 public class MultipleImageTrackingManager : MonoBehaviour
 {
-    //Prefabs to spawn
-    [SerializeField]
-    List<GameObject> prefabsToSpawn = new List<GameObject>();
+    [SerializeField] 
+    private List<GameObject> prefabsToSpawn = new List<GameObject>();
+
     private ARTrackedImageManager trackedImageManager;
     private Dictionary<string, GameObject> arObjects;
 
-    /// <summary>
-    /// Initializes the ARTrackedImageManager and sets up scene elements.
-    /// </summary>
     private void Start()
     {
         trackedImageManager = GetComponent<ARTrackedImageManager>();
-        if (trackedImageManager == null) return;
-        trackedImageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
+        if (trackedImageManager == null)
+        {
+            Debug.LogError("No ARTrackedImageManager found on this GameObject!");
+            return;
+        }
+
         arObjects = new Dictionary<string, GameObject>();
-        SetupSceneElements();
+
+        SetupPrefabs();
+        trackedImageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
     }
 
-    /// <summary>
-    /// Cleans up event listeners on destroy.
-    /// </summary>
     private void OnDestroy()
     {
-        trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
+        if (trackedImageManager != null)
+            trackedImageManager.trackablesChanged.RemoveListener(OnTrackedImagesChanged);
     }
 
     /// <summary>
-    /// Setup Scene Elements
+    /// Instantiates each prefab once and stores it in a dictionary.
     /// </summary>
-    private void SetupSceneElements()
+    private void SetupPrefabs()
     {
-        foreach (var prefab in prefabsToSpawn)
+        foreach (GameObject prefab in prefabsToSpawn)
         {
             if (prefab == null)
             {
-                Debug.LogWarning("Null prefab found in prefabsToSpawn list!");
+                Debug.LogWarning("Null prefab found in list!");
                 continue;
             }
-            var arObject = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-            arObject.name = prefab.name;
-            arObject.gameObject.SetActive(false);
-            arObjects.Add(arObject.name, arObject);
+
+            GameObject spawned = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            spawned.name = prefab.name;
+            spawned.SetActive(false);
+
+            if (!arObjects.ContainsKey(spawned.name))
+                arObjects.Add(spawned.name, spawned);
+            else
+                Debug.LogWarning($"Duplicate prefab name detected: {spawned.name}");
         }
     }
 
     /// <summary>
-    /// Handles changes in tracked images.
+    /// Handles image tracking changes
     /// </summary>
-    /// <param name="eventArgs"></param>
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
         foreach (var trackedImage in eventArgs.added)
-        {
             UpdateARObject(trackedImage);
-        }
 
         foreach (var trackedImage in eventArgs.updated)
-        {
             UpdateARObject(trackedImage);
-        }
 
         foreach (var trackedImage in eventArgs.removed)
+            HideARObject(trackedImage);
+    }
+
+    private void HideARObject(KeyValuePair<TrackableId, ARTrackedImage> trackedImage)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Updates prefab visibility and position when image is tracked.
+    /// </summary>
+    private void UpdateARObject(ARTrackedImage trackedImage)
+    {
+        if (trackedImage == null || trackedImage.referenceImage == null)
+            return;
+
+        string imageName = trackedImage.referenceImage.name;
+
+        if (!arObjects.ContainsKey(imageName))
         {
-            UpdateARObject(trackedImage.Value);
+            Debug.LogWarning($"No prefab found for image: {imageName}");
+            return;
+        }
+
+        GameObject obj = arObjects[imageName];
+
+        if (trackedImage.trackingState == TrackingState.Tracking)
+        {
+            obj.SetActive(true);
+            obj.transform.position = trackedImage.transform.position;
+            obj.transform.rotation = trackedImage.transform.rotation;
+        }
+        else
+        {
+            obj.SetActive(false);
         }
     }
 
     /// <summary>
-    /// Updates the AR object corresponding to the tracked image.
+    /// Called when image is removed from tracking.
     /// </summary>
-    /// <param name="trackedImage"></param>
-    private void UpdateARObject(ARTrackedImage trackedImage)
+    private void HideARObject(ARTrackedImage trackedImage)
     {
-        if(trackedImage == null) return;
-        if (trackedImage.trackingState is UnityEngine.XR.ARSubsystems.TrackingState.Limited or UnityEngine.XR.ARSubsystems.TrackingState.None)
-        {
-            arObjects[trackedImage.referenceImage.name].gameObject.SetActive(false);
-            return;
-        }
-        arObjects[trackedImage.referenceImage.name].gameObject.SetActive(true);
-        arObjects[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
-        arObjects[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
+        if (trackedImage == null) return;
+
+        string imageName = trackedImage.referenceImage.name;
+
+        if (arObjects.ContainsKey(imageName))
+            arObjects[imageName].SetActive(false);
     }
 }
