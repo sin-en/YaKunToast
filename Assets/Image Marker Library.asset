@@ -75,7 +75,7 @@ MonoBehaviour:
       m_GuidHigh: 5883533982040894091
     m_Size: {x: 0.1587, y: 0.2245}
     m_SpecifySize: 1
-    m_Name: Set
+    m_Name: DraggableModelsTracker
     m_Texture: {fileID: 0}
   - m_SerializedGuid:
       m_GuidLow: 5535479746173015618
