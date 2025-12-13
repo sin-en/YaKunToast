@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Draggable
+  - DropBox
+  - PuzzlePiece
   layers:
   - Default
   - TransparentFX
@@ -12,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - DraggableModels
   - 
   - 
   - 
