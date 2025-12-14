@@ -69,6 +69,19 @@ public class GameManager : MonoBehaviour
             UpdateTimerUI();
         }
     }
+
+    /// <summary>
+    /// Cleanup before object is disabled to prevent AR tracking errors.
+    /// </summary>
+    private void OnDisable()
+    {
+        // Disable AR components when this object is disabled
+        var trackedImageManager = FindObjectOfType<UnityEngine.XR.ARFoundation.ARTrackedImageManager>();
+        if (trackedImageManager != null)
+        {
+            trackedImageManager.enabled = false;
+        }
+    }
     #endregion
 
     #region UI Updates
@@ -187,7 +200,6 @@ public class GameManager : MonoBehaviour
     #region Set Completion
     /// <summary>
     /// Handles actions upon completing the full set of items.
-    /// Changes to completion scene after 5 items collected.
     /// </summary>
     private void CompleteSet()
     {
@@ -198,9 +210,16 @@ public class GameManager : MonoBehaviour
             timerScript.StopTimer();
             float finalTime = timerScript.GetCurrentTime();
 
-            // Fire-and-forget async operations
+            // Fire-and-forget (do NOT wait)
             SaveSetCompletion(finalTime);
             leaderboardManager?.SubmitScore(finalTime);
+        }
+
+        // Disable AR tracking before changing scene
+        var trackedImageManager = FindObjectOfType<UnityEngine.XR.ARFoundation.ARTrackedImageManager>();
+        if (trackedImageManager != null)
+        {
+            trackedImageManager.enabled = false;
         }
 
         // Change scene immediately
@@ -245,7 +264,7 @@ public class GameManager : MonoBehaviour
         // Reset local game state
         itemsCollected = 0;
         collectedItemIds.Clear();
-        isCompletingSet = false; // Reset completion flag
+        isCompletingSet = false;
         
         // Reset timer
         if (timerScript != null)
@@ -286,7 +305,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// Go back to main menu and reset game
     /// </summary>

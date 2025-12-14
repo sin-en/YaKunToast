@@ -847,7 +847,7 @@ MonoBehaviour:
   finalModelSpinSpeed: 100
   finalModelHoldDuration: 5
   finalModelScale: 3
-  mainMenuSceneName: SampleScene
+  mainMenuSceneName: SampleScene 3
 --- !u!1 &481010436
 GameObject:
   m_ObjectHideFlags: 0
