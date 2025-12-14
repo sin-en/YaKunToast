@@ -4634,6 +4634,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefaultSimulationEnvironment 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7576867131100388943, guid: f24e9198ea96b1142bd4aaa69356d155, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7634667262382290452, guid: f24e9198ea96b1142bd4aaa69356d155, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -7912,7 +7916,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5855930831427213149, guid: 6a28cdd6b09efb941898a187fbaa176f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8523796548112262183, guid: 6a28cdd6b09efb941898a187fbaa176f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
