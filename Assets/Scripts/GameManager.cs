@@ -8,11 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-
 
     [Header("UI References")]
     public TextMeshProUGUI itemsCountText;
@@ -24,9 +24,13 @@ public class GameManager : MonoBehaviour
     public int totalItems = 5;
     public List<string> collectedItemIds = new List<string>();
 
+    [Header("Scene Settings")]
+    public string completionSceneName = "PuttingTogether";
+
     [Header("References")]
     public Timer timerScript;
     public LeaderboardManager leaderboardManager;
+    private bool isCompletingSet = false;
 
     #region Unity Lifecycle
     /// <summary>
@@ -145,9 +149,10 @@ public class GameManager : MonoBehaviour
         await SaveItemToFirebase(itemId, itemName);
 
         // Check if all items collected
-        if (itemsCollected >= totalItems)
+        if (itemsCollected >= totalItems && !isCompletingSet)
         {
-            await CompleteSet();
+            isCompletingSet = true;
+            CompleteSet();
         }
     }
 
@@ -182,30 +187,25 @@ public class GameManager : MonoBehaviour
     #region Set Completion
     /// <summary>
     /// Handles actions upon completing the full set of items.
+    /// Changes to completion scene after 5 items collected.
     /// </summary>
-    private async Task CompleteSet()
+    private void CompleteSet()
     {
         Debug.Log("Set Complete! All 5 items collected!");
-        
+
         if (timerScript != null)
         {
-            // Stop the timer and get final time
             timerScript.StopTimer();
             float finalTime = timerScript.GetCurrentTime();
-            Debug.Log($"Final completion time: {timerScript.GetFormattedTime()}");
-            
-            // Save to Firebase
-            await SaveSetCompletion(finalTime);
-            
-            // Submit to leaderboard
-            if (leaderboardManager != null)
-            {
-                leaderboardManager.SubmitScore(finalTime);
-                // Show leaderboard after a delay
-                await Task.Delay(2000);
-                leaderboardManager.ShowLeaderboard();
-            }
+
+            // Fire-and-forget async operations
+            SaveSetCompletion(finalTime);
+            leaderboardManager?.SubmitScore(finalTime);
         }
+
+        // Change scene immediately
+        Debug.Log($"Loading scene: {completionSceneName}");
+        SceneManager.LoadScene(completionSceneName);
     }
 
     /// <summary>
@@ -245,6 +245,7 @@ public class GameManager : MonoBehaviour
         // Reset local game state
         itemsCollected = 0;
         collectedItemIds.Clear();
+        isCompletingSet = false; // Reset completion flag
         
         // Reset timer
         if (timerScript != null)
@@ -285,6 +286,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    
     /// <summary>
     /// Go back to main menu and reset game
     /// </summary>
