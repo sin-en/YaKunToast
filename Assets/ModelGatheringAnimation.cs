@@ -1,6 +1,6 @@
 /*
-* Author: Kwek Sin En
-* Date: 14/12/2025
+* Author: Zelda Ng XinYi
+* Date: 13/12/2025
 * Description: Animates 5 models gathering from a circle to center, then spawns a new model
 */
 using System.Collections;
